@@ -1,0 +1,159 @@
+/* Center the entire portal on the screen */
+.portal-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: white; /* Dark background matching your image container */
+  font-family: Arial, sans-serif;
+  color: #000;
+}
+
+/* Page Heading */
+.portal-title {
+  font-size: 28px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  color: #000000;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.register-title {
+  font-size: 35px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: -10px;
+  color: #000000;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 2;
+}
+
+/* Light blue form box */
+.login-box {
+  background-color: #d6efff;
+  border: 8px solid #cccccc;
+  border-radius: 24px;
+  padding: 40px 30px;
+  width: 450px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+ 
+}
+
+.register-box {
+  background-color: #a8dafa;
+  border: 8px solid #cccccc;
+  border-radius: 24px;
+  padding: 30px 30px;
+  width: 600px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Row wrapping the label and input together */
+.form-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Form labels (staff id, password) */
+.form-label {
+  font-size: 18px;
+  color: #758a99;
+  width: 30%;
+}
+
+/* Input Fields */
+.form-input {
+  width: 65%;
+  padding: 10px 30px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  background-color: #ffffff;
+  font-size: 16px;
+  color: black;
+}
+
+.hidden-placeholder {
+  display: none !important;
+}
+
+/* Highlight the active focused input with a blue border */
+.form-input:focus {
+  outline: none;
+  border: 3px solid #0091ff;
+}
+
+/* Centered login button wrapper */
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+/* Pill-shaped login button */
+.login-btn {
+  background-color: #7a7a7a;
+  color: #ffffff;
+  border: none;
+  padding: 10px 36px;
+  font-size: 18px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.login-btn:hover {
+  background-color: #5a5a5a;
+}
+
+/* Links below the box */
+.portal-links {
+  margin-top: 25px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  font-size: 16px;
+}
+
+.register-links{
+  text-align: center;
+  margin-top: 25px;
+  font-size: 16px;
+}
+
+.link-blue {
+  color: #0022cc;
+  text-decoration: none;
+}
+
+.link-blue:hover {
+  text-decoration: underline;
+}
+
+.text-gray {
+  color: #333333;
+}
+
+/* Bottom Footer Divider and Text */
+.portal-footer {
+  margin-top: 40px;
+  width: 100%;
+  max-width: 500px;
+  border-top: 1px solid #dddddd;
+  padding-top: 15px;
+  text-align: center;
+  font-size: 14px;
+  color: #333333;
+  font-style: italic;
+}
