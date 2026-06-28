@@ -32,9 +32,7 @@ function Staffregister(){
                         <input type="text" className="form-input"/>
                     </div>
                     <div className="button-container" >
-                        <a href='http://localhost:5175/staffdash'>
-                            <button type="submit" className="login-btn">Register</button>
-                        </a>
+                            <a href="" className="login-btn">Register</a>
                     </div>
                 </form>
             </div>

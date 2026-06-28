@@ -21,7 +21,7 @@ function Studentlogin(){
 
         {/* Login Button */}
         <div className="button-container">
-          <button type="submit" className="login-btn">login</button>
+          <a href="/studentdash" className="login-btn">login</a>
         </div>
       </div>
 

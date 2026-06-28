@@ -4,6 +4,8 @@ import Stafflogin from './pages/Stafflogin'
 import Studentlogin from './pages/Studentlogin'
 import Studentregister from './pages/Studentregister'
 import Staffregister from './pages/Staffregister'
+import Studentdash from './pages/Studentdash'
+import Staffdash from './pages/Staffdash'
 
 
 function App() {
@@ -16,6 +18,8 @@ function App() {
       <Route path='/studentlogin' element={<Studentlogin/>}/>
       <Route path='/studentregister' element={<Studentregister/>}/>
       <Route path='/staffregister' element={<Staffregister/>}/>
+      <Route path='/studentdash' element={<Studentdash/>}/>
+      <Route path='/staffdash' element={<Staffdash/>}/>
     </Routes>
     </BrowserRouter>
     </>

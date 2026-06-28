@@ -22,9 +22,7 @@ function Stafflogin() {
 
         {/* Login Button */}
         <div className="button-container">
-          <a href='http://localhost:5175/staffdash'>
-              <button type="submit" className="login-btn">login</button>
-          </a>
+              <a href="/staffdash" className="login-btn">login</a>
         </div>
       </div>
 

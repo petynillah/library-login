@@ -39,7 +39,7 @@ function Studentregister(){
                         <input type="text" className="form-input"/>
                     </div>
                     <div className="button-container" >
-                        <button type="submit" className="login-btn">Register</button>
+                        <a href="" className="login-btn">Register</a>
                     </div>
                 </form>
             </div>
