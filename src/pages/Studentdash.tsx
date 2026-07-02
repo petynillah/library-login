@@ -26,10 +26,10 @@ function Studentdash(){
                     <p style={{fontSize:'20px', color:'black', textAlign:'justify', paddingLeft:'30px'}}>
                         <b>Welcome</b><i> Anna</i></p>
                     <div className="cards">
-                        <a href='http://localhost:5176/allbooks'>books</a>
-                        <a href='http://localhost:5176/availablebk'>Check if a book exists</a>
-                        <a href='http://localhost:5176/borrowedbk'>borrowed books</a>
-                        <a href='http://localhost:5176/allbooks'>read books</a>
+                        <a href='https://student-dash-zeta.vercel.app/allbooks'>books</a>
+                        <a href='https://student-dash-zeta.vercel.app/availablebk'>Check if a book exists</a>
+                        <a href='https://student-dash-zeta.vercel.app/borrowedbk'>borrowed books</a>
+                        <a href='https://student-dash-zeta.vercel.app/allbooks'>read books</a>
                         <a href=''>payment status</a>
                     </div>
                 </div>

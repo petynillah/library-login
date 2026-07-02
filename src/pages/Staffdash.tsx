@@ -27,11 +27,11 @@ function Staffdash(){
                     <p style={{fontSize:'20px', color:'black', textAlign:'justify', paddingLeft:'30px'}}>
                         <b>Welcome</b><i> Anna</i></p>
                     <div className="cards">
-                        <a href='http://localhost:5175/bookdash'>books</a>
-                        <a href='http://localhost:5175/addcategory'>categories</a>
-                        <a href='http://localhost:5175/borrowbook'>borrow</a>
-                        <a href='http://localhost:5175/addshelf'>shelving</a>
-                        <a href='http://localhost:5175/studentdash'>students</a>
+                        <a href='https://library-dashboard-zeta.vercel.app/bookdash'>books</a>
+                        <a href='https://library-dashboard-zeta.vercel.app/addcategory'>categories</a>
+                        <a href='https://library-dashboard-zeta.vercel.app/borrowbook'>borrow</a>
+                        <a href='https://library-dashboard-zeta.vercel.app/addshelf'>shelving</a>
+                        <a href='https://library-dashboard-zeta.vercel.app/studentdash'>students</a>
                     </div>
                 </div>
             
