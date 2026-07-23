@@ -80,12 +80,20 @@ function Staffdash(): React.JSX.Element {
                         <b>Welcome</b> <i>{currentStaff.name}</i>
                     </p>
                     <div className="cards">
-                        {/* Append tokens dynamically to cross-port URLs */}
+                        {/* Append tokens dynamically to cross-port URLs 
                         <a href={buildSecureUrl('https://library-dashboard-zeta.vercel.app/bookdash')}>books</a>
                         <a href={buildSecureUrl('https://library-dashboard-zeta.vercel.app/addcategory')}>categories</a>
                         <a href={buildSecureUrl('https://library-dashboard-zeta.vercel.app/borrowbook')}>borrow</a>
                         <a href={buildSecureUrl('https://library-dashboard-zeta.vercel.app/addshelf')}>shelving</a>
                         <a href={buildSecureUrl('https://library-dashboard-zeta.vercel.app/studentdash')}>students</a>
+
+                        */}
+
+                        <a href={buildSecureUrl('http://localhost:5174//bookdash')}>books</a>
+                        <a href={buildSecureUrl('http://localhost:5174/addcategory')}>categories</a>
+                        <a href={buildSecureUrl('http://localhost:5174/borrowbook')}>borrow</a>
+                        <a href={buildSecureUrl('http://localhost:5174/addshelf')}>shelving</a>
+                        <a href={buildSecureUrl('http://localhost:5174/studentdash')}>students</a>
                     
                     </div>
                 </div>
