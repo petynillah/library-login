@@ -89,7 +89,7 @@ function Staffdash(): React.JSX.Element {
 
                         */}
 
-                        <a href={buildSecureUrl('http://localhost:5174//bookdash')}>books</a>
+                        <a href={buildSecureUrl('http://localhost:5174/bookdash')}>books</a>
                         <a href={buildSecureUrl('http://localhost:5174/addcategory')}>categories</a>
                         <a href={buildSecureUrl('http://localhost:5174/borrowbook')}>borrow</a>
                         <a href={buildSecureUrl('http://localhost:5174/addshelf')}>shelving</a>
