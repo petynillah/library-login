@@ -1,92 +1,154 @@
-import { useState } from "react";
-import { loginStaff } from "../api";
+import React, { useState } from "react";
+import { loginStaff, verifyStaff2FA } from "../api";
+import { Link, useNavigate } from "react-router-dom";
 
 function Stafflogin() {
+  const [staffId, setStaffId] = useState('');
+  const [password, setPassword] = useState('');
+  const [otp, setOtp] = useState('');
+  const [tempToken, setTempToken] = useState('');
+  const [stage, setStage] = useState<'credentials' | 'otp'>('credentials');
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
-  // Create boxes to hold typing information
-    const [staffId, setStaffId] = useState('');
-    const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-  
-    // This function runs when the student clicks the login button
-    const handleLogin = async (e: React.FormEvent) => {
-      e.preventDefault(); // Stop the webpage from refreshing automatically
-      setErrorMessage(''); // Reset any old errors
-  
-      // Simple check to make sure they didn't leave inputs blank
-      if (!staffId || !password) {
-        setErrorMessage('Please fill in all fields');
-        return;
-      }
-  
-      // Call the network function from api.ts
-      const response = await loginStaff({ staff_id: staffId, password });
-  
-      if (response.success && response.token) {
-    // FIX: Change 'token' to 'jwtToken' so Staffdash can find it
-    localStorage.setItem('jwtToken', response.token);
-        
-        // Redirect the user to their student dashboard
-        window.location.href = '/staffdash';
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage('');
+
+    if (!staffId || !password) {
+      setErrorMessage('Please fill in all fields');
+      return;
+    }
+
+    const response = await loginStaff({ staff_id: staffId, password });
+
+    if (response.success && response.token) {
+      if (response.requires2FA) {
+        setTempToken(response.token);
+        setStage('otp');
       } else {
-        // If the backend says no, show the error message on screen
-        setErrorMessage(response.message || 'Login failed');
+        // Trusted device — no OTP needed, go straight to the dashboard.
+        // FIXED: this previously redirected back to the login page itself,
+        // which looked like the login "did nothing" even though the token was stored.
+        localStorage.setItem('jwtToken', response.token);
+        navigate('/staffdash');
       }
-    };
-  
+    } else {
+      setErrorMessage(response.message || 'Login failed');
+    }
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage('');
+
+    if (!otp) {
+      setErrorMessage('Please enter the verification code');
+      return;
+    }
+
+    const response = await verifyStaff2FA(tempToken, { otp });
+
+    if (response.success && response.token) {
+      localStorage.setItem('jwtToken', response.token);
+      navigate('/staffdash');
+    } else {
+      setErrorMessage(response.message || 'Verification failed');
+    }
+  };
+
+  if (stage === 'otp') {
+    return (
+      <div className="portal-container">
+        <h1 className="portal-title">Staff Login Portal</h1>
+
+        <form onSubmit={handleVerifyOtp} className="login-box">
+          {errorMessage && (
+            <p style={{ color: 'red', textAlign: 'center', marginBottom: '10px', fontSize: '14px' }}>
+              {errorMessage}
+            </p>
+          )}
+
+          <div className="form-group">
+            <label className="form-label">verification code</label>
+            <input
+              type="text"
+              className="form-input"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              maxLength={6}
+            />
+          </div>
+
+          <div className="button-container">
+            <button type="submit" className="login-btn" >
+              verify
+            </button>
+          </div>
+        </form>
+
+        <div className="portal-links">
           
+           <a href="#back"
+            className="link-blue"
+            onClick={(e) => { e.preventDefault(); setStage('credentials'); setErrorMessage(''); }}
+          >
+            Back to Login
+          </a>
+        </div>
+
+        <footer className="portal-footer">
+          mombasa county library &copy;2026
+        </footer>
+      </div>
+    );
+  }
+
   return (
     <div className="portal-container">
-      {/* Title */}
       <h1 className="portal-title">Staff Login Portal</h1>
 
-      {/* Main Login Box */}
       <form onSubmit={handleLogin} className="login-box">
-             {/* Error Notification Alert */}
         {errorMessage && (
           <p style={{ color: 'red', textAlign: 'center', marginBottom: '10px', fontSize: '14px' }}>
             {errorMessage}
           </p>
         )}
-         
-          {/* Staff ID Row */}
-          <div className="form-group">
-            <label className="form-label">staff id</label>
-            <input 
-                type="text" 
-                className="form-input" 
-                value={staffId}
-                onChange={(e) => setStaffId(e.target.value)} // Update value as they type
-          />
-          </div>
 
-          {/* Password Row */}
-          <div className="form-group">
-            <label className="form-label">password</label>
-            <input 
-                type="password" 
-                className="form-input" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)} // Update value as they type
+        <div className="form-group">
+          <label className="form-label">staff id</label>
+          <input
+            type="text"
+            className="form-input"
+            value={staffId}
+            onChange={(e) => setStaffId(e.target.value)}
           />
-          </div>
+        </div>
 
-          {/* Login Button */}
-          <div className="button-container">
-          <button type="submit" className="login-btn" style={{ background: 'none', border: 'none', width: '100%', cursor: 'pointer' }}>
+        <div className="form-group">
+          <label className="form-label">password</label>
+          <input
+            type="password"
+            className="form-input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+
+        <div className="button-container">
+          <button type="submit" className="login-btn" >
             login
           </button>
         </div>
       </form>
 
-      {/* Action Links */}
       <div className="portal-links">
         <a href="#forgot" className="link-blue">forgot password?</a>
         <span className="text-gray">
-          first time login? <a href="/staffregister" className="link-blue" target="_blank">register</a>
+          First time login? <Link to="/staffregister" className="link-blue" target="_blank">Register</Link>
         </span>
       </div>
-      {/* Footer Area */}
+
       <footer className="portal-footer">
         mombasa county library &copy;2026
       </footer>
@@ -94,4 +156,4 @@ function Stafflogin() {
   );
 }
 
-export default Stafflogin
+export default Stafflogin;

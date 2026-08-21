@@ -69,6 +69,7 @@
   font-size: 18px;
   color: #758a99;
   width: 30%;
+  
 }
 
 /* Input Fields */
@@ -81,6 +82,7 @@
   background-color: #ffffff;
   font-size: 16px;
   color: black;
+  border-radius: 10px;
 }
 
 .hidden-placeholder {
@@ -99,13 +101,11 @@
   justify-content: center;
   margin-top: 10px;
 }
-.button-container a{
-  text-decoration: none;
-}
+
 
 /* Pill-shaped login button */
 .login-btn {
-  background-color: #7a7a7a;
+  background-color: #000000;
   color: #ffffff;
   border: none;
   padding: 10px 36px;
@@ -113,6 +113,7 @@
   border-radius: 50px;
   cursor: pointer;
   transition: background-color 0.2s;
+  cursor: pointer;
 }
 
 .login-btn:hover {
@@ -133,11 +134,13 @@
   text-align: center;
   margin-top: 25px;
   font-size: 16px;
+  
 }
 
 .link-blue {
   color: #0022cc;
   text-decoration: none;
+  font-weight: bold;
 }
 
 .link-blue:hover {
@@ -159,6 +162,7 @@
   font-size: 14px;
   color: #333333;
   font-style: italic;
+  font-weight: bold;
 }
 .head1{
     color: black;
@@ -217,6 +221,8 @@
     justify-content: start;
     align-items: center;
     text-transform: capitalize;
+    color: #000;
+    font-weight: bolder;
 }
 .navbar img{
     height: 75px;

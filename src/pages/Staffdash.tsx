@@ -1,105 +1,162 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from "../assets/logo.jpg";
+import { getStaffById } from '../api';
+import { Link, useNavigate } from 'react-router-dom';
 
+// Explicit TypeScript Interface for the decoded payload structure
 interface DecodedTokenUser {
-    name: string;
-    staff_Id: string | number;
-    gender: string;
-    role: string;
+  id: string | number;
+  name: string;
+  staff_id: string | number; 
+  gender: string;
+  role: string;
+  is2FAVerified: boolean;
 }
 
+/**
+ * Extracts and decodes the JWT token payload from LocalStorage safely.
+ * Matches backend middleware authentication expectations.
+ */
 const getStaffInfoFromToken = (): DecodedTokenUser | null => {
-    const token = localStorage.getItem('jwtToken');
-    if (!token) return null;
+  const token = localStorage.getItem('jwtToken'); 
+  if (!token) return null;
 
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(
-            window.atob(base64)
-                .split('')
-                .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-                .join('')
-        );
-
-        const decoded = JSON.parse(jsonPayload);
-        // Inside Staffdash.tsx, this helper maps directly to your signed token:
-        return {
-            name: decoded.name,     // Displays real staff name instead of "Anna"
-            staff_Id: decoded.id,    // Displays "STF-2026-X" instead of "345678"
-            gender: decoded.gender,  // Displays real gender instead of "Female"
-            role: decoded.role       // Displays "staff" instead of hardcoded "librarian"
-        };
-
-    } catch (error) {
-        console.error("Token decoding failed:", error);
-        return null;
+  try {
+    const pureToken = token.replace(/^(Bearer\s+)+/i, '').trim();
+    const tokenParts = pureToken.split('.');
+    if (tokenParts.length < 2) {
+      console.warn("Token structure is not a valid 3-part JWT.");
+      return null;
     }
+    
+    const base64Url = tokenParts[1]; 
+    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    while (base64.length % 4) { base64 += '='; }
+    
+    const jsonPayload = decodeURIComponent(
+      window.atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    
+    const decoded = JSON.parse(jsonPayload);
+
+    return {
+      id: decoded.id || decoded.staff_id || "",
+      name: decoded.name || "Unknown User", 
+      staff_id: decoded.staff_id || decoded.id || "N/A", 
+      gender: decoded.gender || "N/A", 
+      role: decoded.role || "user",         
+      is2FAVerified: !!decoded.is2FAVerified 
+    };
+  } catch (error) {
+    console.error("Token decoding failed:", error);
+    return null;
+  }
 };
 
 function Staffdash(): React.JSX.Element {
-    const staff = getStaffInfoFromToken();
-    const token = localStorage.getItem('jwtToken') || '';
-
-    const currentStaff: DecodedTokenUser = staff || {
-        name: "Guest User",
-        staff_Id: "000000",
-        gender: "N/A",
-        role: "Unauthorized"
+  const navigate = useNavigate(); // Hook for seamless SPA redirection
+  
+  const [currentStaff, setCurrentStaff] = useState<DecodedTokenUser>(() => {
+    const tokenBackup = getStaffInfoFromToken();
+    return tokenBackup || {
+      id: "",
+      name: "Guest User",
+      staff_id: "000000",
+      gender: "N/A",
+      role: "Unauthorized",
+      is2FAVerified: false
     };
+  });
+  
+  const [sessionError, setSessionError] = useState<string | null>(null);
 
-    // Appending the token to the URL so the receiving port can grab it
-    const buildSecureUrl = (baseUrl: string): string => {
-        if (!token) return baseUrl;
-        const separator = baseUrl.includes('?') ? '&' : '?';
-        return `${baseUrl}${separator}token=${encodeURIComponent(token)}`;
+  // 🔄 BACKGROUND RE-SYNC: Pull absolute live metrics using centralized CRUD engine
+  useEffect(() => {
+    const syncStaffDatabaseData = async () => {
+      const cachedTokenInfo = getStaffInfoFromToken();
+      
+      if (!cachedTokenInfo || !cachedTokenInfo.id) {
+        setSessionError("Session expired. Please sign in.");
+        navigate('/stafflogin');
+        return;
+      }
+
+      try {
+        const response = await getStaffById(cachedTokenInfo.id);
+      
+        if (response.success && response.data) {
+          const dbData: any = response.data;
+          
+          setCurrentStaff(prevState => ({
+            ...prevState,
+            name: dbData.name || prevState.name,
+            staff_id: dbData.staff_id || prevState.staff_id,
+            gender: dbData.gender || prevState.gender,
+            role: dbData.role || prevState.role
+          }));
+        } else {
+          throw new Error(response.message || "Failed to load database content");
+        }
+      } catch (error) {
+        console.warn("Database sync offline. Maintaining token cache UI configuration.", error);
+      }
     };
+      
+    syncStaffDatabaseData();
+  }, [navigate]);
 
-    return (
-        <>
-            <div className="container">
-                <div className='navbar'>
-                    <img src={logo} alt='logo' />
-                    <div className='list'>
-                        <ul>
-                            <li><span>{currentStaff.name}</span></li>
-                            <li><span>{currentStaff.staff_Id}</span></li>
-                            <li><span>{currentStaff.gender}</span></li>
-                            <li><span style={{ textTransform: 'capitalize' }}>{currentStaff.role}</span></li>                           
-                        </ul>
-                    </div>
-                    <div className='set'>
-                        {/* Assuming Settings stays on the same port app */}
-                        <a href="/settings">Settings</a>
-                    </div>
-                </div>
+  const handleLogout = () => {
+    localStorage.removeItem('jwtToken');
+    navigate('/stafflogin'); 
+  };
 
-                <div className='dashboard'>
-                    <h1 className="head1">Staff Dashboard</h1>
-                    <p style={{ fontSize: '20px', color: 'black', textAlign: 'justify', paddingLeft: '30px' }}>
-                        <b>Welcome</b> <i>{currentStaff.name}</i>
-                    </p>
-                    <div className="cards">
-                        {/* Append tokens dynamically to cross-port URLs 
-                        <a href={buildSecureUrl('https://library-dashboard-zeta.vercel.app/bookdash')}>books</a>
-                        <a href={buildSecureUrl('https://library-dashboard-zeta.vercel.app/addcategory')}>categories</a>
-                        <a href={buildSecureUrl('https://library-dashboard-zeta.vercel.app/borrowbook')}>borrow</a>
-                        <a href={buildSecureUrl('https://library-dashboard-zeta.vercel.app/addshelf')}>shelving</a>
-                        <a href={buildSecureUrl('https://library-dashboard-zeta.vercel.app/studentdash')}>students</a>
+  return (
+    <div className="container">
+      {/* Navigation Bar Header */}
+      <div className='navbar'>
+        <img src={logo} alt='logo' />
+        <div className='list'>
+          <ul>
+            <li><span>{currentStaff.name}</span></li>
+            <li><span>ID: {currentStaff.staff_id}</span></li>
+            <li><span>{currentStaff.gender}</span></li>
+            <li><span style={{ textTransform: 'capitalize' }}>{currentStaff.role}</span></li>
+          </ul>
+        </div>
+        
+        <div className='set'>
+          <Link to="/settings" style={{ marginRight: '15px' }}>Settings</Link>
+          <button onClick={handleLogout} style={{ background: '#ff4d4d', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer' }}>
+            Logout
+          </button>
+        </div>
+      </div>
 
-                        */}
-
-                        <a href={buildSecureUrl('http://localhost:5174/bookdash')}>books</a>
-                        <a href={buildSecureUrl('http://localhost:5174/addcategory')}>categories</a>
-                        <a href={buildSecureUrl('http://localhost:5174/borrowbook')}>borrow</a>
-                        <a href={buildSecureUrl('http://localhost:5174/addshelf')}>shelving</a>
-                        <a href={buildSecureUrl('http://localhost:5174/studentdash')}>students</a>
-                    
-                    </div>
-                </div>
-            </div>
-        </>
-    );
+      {/* Dashboard Panels */}
+      <div className='dashboard'>
+        <h1 className="head1">Staff Dashboard</h1>
+        {sessionError && (
+          <p style={{ color: 'red', paddingLeft: '30px' }}>
+            ⚠️ Session Issue: {sessionError}
+          </p>
+        )}
+        <p style={{ fontSize: '20px', color: 'black', textAlign: 'justify', paddingLeft: '30px' }}>
+          <b>Welcome</b> <i>{currentStaff.name}</i>
+        </p>
+        
+        <div className="cards">
+          <a href="/dashboard/bookdash">books</a>
+          <a href="/dashboard/addcategory">categories</a>
+          <a href="/dashboard/borrowbook">borrow</a>
+          <a href="/dashboard/addshelf">shelving</a>
+          <a href="/dashboard/studentdash">students</a>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default Staffdash;

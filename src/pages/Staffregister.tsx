@@ -1,5 +1,6 @@
 import { registerStaff } from "../api";
-import { useState } from "react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function Staffregister() {
     const [formData, setFormData] = useState({
@@ -10,7 +11,7 @@ function Staffregister() {
         occupation: '',
         password: '' // Required for backend security hashing
     });
-
+    const navigate = useNavigate();
     const [successId, setSuccessId] = useState(''); // Holds generated staff_id on success
     const [errors, setErrors] = useState<string[]>([]); // Tracks missing fields for red highlights
 
@@ -25,26 +26,28 @@ function Staffregister() {
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setSuccessId(''); 
-        setErrors([]);
+  e.preventDefault();
+  setSuccessId('');
+  setErrors([]);
+  
+  const result = await registerStaff(formData);
+  
+  if (result.success && result.staff_id) {
+    setSuccessId(result.staff_id);
+    
+    // 1. Notify the user of their new login credentials
+    alert(`Registration successful!\nYour generated Staff ID is: ${result.staff_id}\n\nClick OK to go to the Login Page.`);
+    
+    // 2. Redirect immediately to the staff login page
+    navigate('/stafflogin'); 
+  } else {
+    if (result.missingFields) {
+      setErrors(result.missingFields);
+    }
+    alert(result.message || 'Something went wrong.');
+  }
+};
 
-        const result = await registerStaff(formData);
-        
-        if (result.success && result.staff_id) {
-            setSuccessId(result.staff_id);
-            alert(`Registration successful! Your generated Staff ID is: ${result.staff_id}\nUse this ID to log in.`);
-            
-            // Clear fields cleanly after a successful save
-            setFormData({ name: '', gender: '', age: '', id_number: '', occupation: '', password: '' });
-        } else {
-            // Pick up backend's dynamic field missing array checklist
-            if (result.missingFields) {
-                setErrors(result.missingFields);
-            }
-            alert(result.message || 'Something went wrong.');
-        }
-    };
 
     // Style injector for validation alerts
     const getInputStyle = (fieldName: string) => {
@@ -105,13 +108,13 @@ function Staffregister() {
 
                     {/* FIXED: Swapped <a> tag to button element to properly fire onSubmit validation */}
                     <div className="button-container">
-                        <button type="submit" className="login-btn" style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'block', width: '100%' }}>Register</button>
+                        <button type="submit" className="login-btn" >Register</button>
                     </div>
                 </form>
             </div>
 
             <span className="register-links">
-                Already have an account?<a href="/stafflogin" className="link-blue" target="_blank">Login</a>
+                Already have an account?<Link to="/stafflogin" className="link-blue" target="_blank">Login</Link>
             </span>
 
             <footer className="portal-footer">
