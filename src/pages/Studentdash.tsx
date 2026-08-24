@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import logo from "../assets/logo.jpg";
 import { getStudentById } from '../api'; 
 import { Link, useNavigate } from 'react-router-dom'; 
+import { APP_URLS } from '../Appurl';
 
 interface DecodedTokenUser {
   id: string | number;         
@@ -145,11 +146,11 @@ function Studentdash(): React.JSX.Element {
         
         <div className="cards">
           
-          <a href="/student/availablebk" style={{ width:'50%' }}>check if a book exists</a>
-          <a href="/student/allbooks">All books</a>
-          <a href="/student/borrowedbk"> borrowed ({currentStudent.borrowedCount}) </a>
-          <a href="/student/allbooks">read status</a>
-          <a href="/student/payments" style={{ fontWeight: 'bold' }}> 
+          <a href={`${APP_URLS.studentDash}/student/availablebk`} style={{ width:'50%' }}>check if a book exists</a>
+          <a href={`${APP_URLS.studentDash}/student/allbooks`}>All books</a>
+          <a href={`${APP_URLS.studentDash}/student/borrowedbk`}> borrowed ({currentStudent.borrowedCount}) </a>
+          <a href={`${APP_URLS.studentDash}/student/allbooks`}>read status</a>
+          <a href={`${APP_URLS.studentDash}/student/payments`}> 
             payment: <span style={{ textTransform: 'uppercase' }}>{currentStudent.paymentStatus}</span> 
           </a>
         </div>

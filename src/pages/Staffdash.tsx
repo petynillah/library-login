@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import logo from "../assets/logo.jpg";
 import { getStaffById } from '../api';
 import { Link, useNavigate } from 'react-router-dom';
+import { APP_URLS } from '../Appurl';
 
 // Explicit TypeScript Interface for the decoded payload structure
 interface DecodedTokenUser {
@@ -148,11 +149,11 @@ function Staffdash(): React.JSX.Element {
         </p>
         
         <div className="cards">
-          <a href="/dashboard/bookdash">books</a>
-          <a href="/dashboard/addcategory">categories</a>
-          <a href="/dashboard/borrowbook">borrow</a>
-          <a href="/dashboard/addshelf">shelving</a>
-          <a href="/dashboard/studentdash">students</a>
+          <a href={`${APP_URLS.staffDashboard}/dashboard/bookdash`}>books</a>
+          <a href={`${APP_URLS.staffDashboard}/dashboard/addcategory`}>categories</a>
+          <a href={`${APP_URLS.staffDashboard}/dashboard/borrowbook`}>borrow</a>
+          <a href={`${APP_URLS.staffDashboard}/dashboard/addshelf`}>shelving</a>
+          <a href={`${APP_URLS.staffDashboard}/dashboard/studentdash`}>students</a>
         </div>
       </div>
     </div>
