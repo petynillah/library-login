@@ -24,7 +24,7 @@ function Studentlogin() {
     const response = await loginStudent({ student_id: studentId, password });
 
     if (response.success && response.token) {
-        window.location.href = `${APP_URLS.studentDash}/studentdash?token=${encodeURIComponent(response.token)}`;
+        window.location.href = `${APP_URLS.studentDash}/student?token=${encodeURIComponent(response.token)}`;
       } else {
       // If the backend says no, show the error message on screen
       setErrorMessage(response.message || 'Login failed');
