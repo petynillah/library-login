@@ -148,12 +148,12 @@ function Studentdash(): React.JSX.Element {
         
           <div className="cards">
             <a 
-              href={`${APP_URLS.studentDash}/student/availablebk?token=${encodeURIComponent(activeToken)}`} 
+              href={`${APP_URLS.studentDash}/availablebk?token=${encodeURIComponent(activeToken)}`} 
               style={{ width:'50%' }}
             >
               check if a book exists
             </a>
-            <a href={`${APP_URLS.studentDash}/student/allbooks?token=${encodeURIComponent(activeToken)}`}>
+            <a href={`${APP_URLS.studentDash}/allbooks?token=${encodeURIComponent(activeToken)}`}>
               All books
             </a>
             <a href={`${APP_URLS.studentDash}/student/borrowedbk?token=${encodeURIComponent(activeToken)}`}> 
