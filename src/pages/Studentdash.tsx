@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import logo from "../assets/logo.jpg";
 import { getStudentById } from '../api'; 
 import { Link, useNavigate } from 'react-router-dom'; 
-//import { APP_URLS } from '../Appurl';
+import { APP_URLS } from '../Appurl';
 
 interface DecodedTokenUser {
   id: string | number;         
@@ -114,7 +114,7 @@ function Studentdash(): React.JSX.Element {
   const activeToken = localStorage.getItem('jwtToken') || '';
 const tokenParam = `?token=${encodeURIComponent(activeToken)}`;
 
-const cleanBaseRoute = "https://vercel.app";
+
 
   return (
     <div className="container">
@@ -149,25 +149,25 @@ const cleanBaseRoute = "https://vercel.app";
           <b>Welcome</b> <i>{currentStudent.name}</i>
         </p>
         
-           <div className="cards">
-    {/* This generates: https://vercel.app/availablebk?token=... */}
-    <a href={`${cleanBaseRoute}/availablebk${tokenParam}`} style={{ width:'50%' }}>
+          <div className="cards">
+    {/* Explicitly construct the path to ensure it has exactly one /student segment */}
+    <a href={`${APP_URLS.studentDash}/availablebk${tokenParam}`} style={{ width:'50%' }}>
       check if a book exists
     </a>
     
-    <a href={`${cleanBaseRoute}/allbooks${tokenParam}`}>
+    <a href={`${APP_URLS.studentDash}/allbooks${tokenParam}`}>
       All books
     </a>
     
-    <a href={`${cleanBaseRoute}/borrowedbk${tokenParam}`}> 
+    <a href={`${APP_URLS.studentDash}/borrowedbk${tokenParam}`}> 
       borrowed ({currentStudent.borrowedCount}) 
     </a>
     
-    <a href={`${cleanBaseRoute}/allbooks${tokenParam}`}>
+    <a href={`${APP_URLS.studentDash}/student/allbooks${tokenParam}`}>
       read status
     </a>
     
-    <a href={`${cleanBaseRoute}/payments${tokenParam}`}> 
+    <a href={`${APP_URLS.studentDash}/student/payments${tokenParam}`}> 
       payment: <span style={{ textTransform: 'uppercase' }}>{currentStudent.paymentStatus}</span> 
     </a>
   </div>
