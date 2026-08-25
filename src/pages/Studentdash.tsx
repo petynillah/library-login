@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import logo from "../assets/logo.jpg";
 import { getStudentById } from '../api'; 
-import { Link, useNavigate } from 'react-router-dom'; 
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'; 
 import { APP_URLS } from '../Appurl';
 
 interface DecodedTokenUser {
@@ -69,6 +69,15 @@ function Studentdash(): React.JSX.Element {
     };
   });
 
+  const [searchParams] = useSearchParams();
+
+useEffect(() => {
+  const tokenFromUrl = searchParams.get('token');
+  if (tokenFromUrl) {
+    localStorage.setItem('jwtToken', tokenFromUrl);
+    navigate('/studentdash', { replace: true }); // strips ?token=... from the visible URL
+  }
+}, [searchParams, navigate]);
   const [sessionError, setSessionError] = useState<string | null>(null);
 
   useEffect(() => {

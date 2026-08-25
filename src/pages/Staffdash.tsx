@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import logo from "../assets/logo.jpg";
 import { getStaffById } from '../api';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { APP_URLS } from '../Appurl';
 
 // Explicit TypeScript Interface for the decoded payload structure
@@ -71,6 +71,16 @@ function Staffdash(): React.JSX.Element {
       is2FAVerified: false
     };
   });
+
+  const [searchParams] = useSearchParams();
+
+useEffect(() => {
+  const tokenFromUrl = searchParams.get('token');
+  if (tokenFromUrl) {
+    localStorage.setItem('jwtToken', tokenFromUrl);
+    navigate('/staffdash', { replace: true }); // strips ?token=... from the visible URL
+  }
+}, [searchParams, navigate]);
   
   const [sessionError, setSessionError] = useState<string | null>(null);
 

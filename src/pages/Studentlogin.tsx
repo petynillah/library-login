@@ -1,9 +1,9 @@
 import React, { useState } from "react"; // Fixed: Added explicit React import for TS validation
 import { loginStudent } from "../api";
-import { Link, useNavigate } from "react-router-dom";
+import { Link} from "react-router-dom";
+import { APP_URLS } from "../Appurl";
 function Studentlogin() {
   // Create boxes to hold typing information
-   const navigate = useNavigate();
   const [studentId, setStudentId] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -24,12 +24,8 @@ function Studentlogin() {
     const response = await loginStudent({ student_id: studentId, password });
 
     if (response.success && response.token) {
-      // FIXED: Standardized token reference mapping to 'jwtToken' across portals
-      localStorage.setItem('jwtToken', response.token);
-
-      // FIXED: Redirecting through Nginx to the separate dashboard workspace
-      navigate('/studentdash');
-    } else {
+        window.location.href = `${APP_URLS.studentDash}/studentdash?token=${encodeURIComponent(response.token)}`;
+      } else {
       // If the backend says no, show the error message on screen
       setErrorMessage(response.message || 'Login failed');
     }
