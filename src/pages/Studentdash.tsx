@@ -111,6 +111,7 @@ function Studentdash(): React.JSX.Element {
     localStorage.removeItem('jwtToken');
     navigate('/studentlogin'); 
   };
+  const activeToken = localStorage.getItem('jwtToken') || '';
 
   return (
     <div className="container">
@@ -145,16 +146,26 @@ function Studentdash(): React.JSX.Element {
           <b>Welcome</b> <i>{currentStudent.name}</i>
         </p>
         
-        <div className="cards">
-          
-          <a href={`${APP_URLS.studentDash}/student/availablebk`} style={{ width:'50%' }}>check if a book exists</a>
-          <a href={`${APP_URLS.studentDash}/student/allbooks`}>All books</a>
-          <a href={`${APP_URLS.studentDash}/student/borrowedbk`}> borrowed ({currentStudent.borrowedCount}) </a>
-          <a href={`${APP_URLS.studentDash}/student/allbooks`}>read status</a>
-          <a href={`${APP_URLS.studentDash}/student/payments`}> 
-            payment: <span style={{ textTransform: 'uppercase' }}>{currentStudent.paymentStatus}</span> 
-          </a>
-        </div>
+          <div className="cards">
+            <a 
+              href={`${APP_URLS.studentDash}/student/availablebk?token=${encodeURIComponent(activeToken)}`} 
+              style={{ width:'50%' }}
+            >
+              check if a book exists
+            </a>
+            <a href={`${APP_URLS.studentDash}/student/allbooks?token=${encodeURIComponent(activeToken)}`}>
+              All books
+            </a>
+            <a href={`${APP_URLS.studentDash}/student/borrowedbk?token=${encodeURIComponent(activeToken)}`}> 
+              borrowed ({currentStudent.borrowedCount}) 
+            </a>
+            <a href={`${APP_URLS.studentDash}/student/allbooks?token=${encodeURIComponent(activeToken)}`}>
+              read status
+            </a>
+            <a href={`${APP_URLS.studentDash}/student/payments?token=${encodeURIComponent(activeToken)}`}> 
+              payment: <span style={{ textTransform: 'uppercase' }}>{currentStudent.paymentStatus}</span> 
+            </a>
+          </div>
       </div>
     </div>
   );
