@@ -114,7 +114,7 @@ function Studentdash(): React.JSX.Element {
   const activeToken = localStorage.getItem('jwtToken') || '';
 const tokenParam = `?token=${encodeURIComponent(activeToken)}`;
 
-const cleanBaseRoute = "https://vercel.app";
+const cleanBaseRoute = "https://student-dash-zeta.vercel.app/";
 
   return (
     <div className="container">
@@ -151,7 +151,7 @@ const cleanBaseRoute = "https://vercel.app";
         
            <div className="cards">
     {/* This generates: https://vercel.app/availablebk?token=... */}
-    
+
     <a href={`${cleanBaseRoute}/availablebk${tokenParam}`} style={{ width:'50%' }}>
       check if a book exists
     </a>
