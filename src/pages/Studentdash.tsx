@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import logo from "../assets/logo.jpg";
 import { getStudentById } from '../api'; 
 import { Link, useNavigate } from 'react-router-dom'; 
-import { APP_URLS } from '../Appurl';
+//import { APP_URLS } from '../Appurl';
 
 interface DecodedTokenUser {
   id: string | number;         
@@ -114,6 +114,8 @@ function Studentdash(): React.JSX.Element {
   const activeToken = localStorage.getItem('jwtToken') || '';
 const tokenParam = `?token=${encodeURIComponent(activeToken)}`;
 
+const cleanBaseRoute = "https://vercel.app";
+
   return (
     <div className="container">
       {/* Navigation Bar Header */}
@@ -147,25 +149,25 @@ const tokenParam = `?token=${encodeURIComponent(activeToken)}`;
           <b>Welcome</b> <i>{currentStudent.name}</i>
         </p>
         
-          <div className="cards">
-    {/* Explicitly construct the path to ensure it has exactly one /student segment */}
-    <a href={`${APP_URLS.studentDash}/availablebk${tokenParam}`} style={{ width:'50%' }}>
+           <div className="cards">
+    {/* This generates: https://vercel.app/availablebk?token=... */}
+    <a href={`${cleanBaseRoute}/availablebk${tokenParam}`} style={{ width:'50%' }}>
       check if a book exists
     </a>
     
-    <a href={`${APP_URLS.studentDash}/allbooks${tokenParam}`}>
+    <a href={`${cleanBaseRoute}/allbooks${tokenParam}`}>
       All books
     </a>
     
-    <a href={`${APP_URLS.studentDash}/borrowedbk${tokenParam}`}> 
+    <a href={`${cleanBaseRoute}/borrowedbk${tokenParam}`}> 
       borrowed ({currentStudent.borrowedCount}) 
     </a>
     
-    <a href={`${APP_URLS.studentDash}/student/allbooks${tokenParam}`}>
+    <a href={`${cleanBaseRoute}/allbooks${tokenParam}`}>
       read status
     </a>
     
-    <a href={`${APP_URLS.studentDash}/student/payments${tokenParam}`}> 
+    <a href={`${cleanBaseRoute}/payments${tokenParam}`}> 
       payment: <span style={{ textTransform: 'uppercase' }}>{currentStudent.paymentStatus}</span> 
     </a>
   </div>
