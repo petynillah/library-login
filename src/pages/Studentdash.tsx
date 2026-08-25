@@ -149,15 +149,15 @@ const tokenParam = `?token=${encodeURIComponent(activeToken)}`;
         
           <div className="cards">
     {/* Explicitly construct the path to ensure it has exactly one /student segment */}
-    <a href={`${APP_URLS.studentDash}/student/availablebk${tokenParam}`} style={{ width:'50%' }}>
+    <a href={`${APP_URLS.studentDash}/availablebk${tokenParam}`} style={{ width:'50%' }}>
       check if a book exists
     </a>
     
-    <a href={`${APP_URLS.studentDash}/student/allbooks${tokenParam}`}>
+    <a href={`${APP_URLS.studentDash}/allbooks${tokenParam}`}>
       All books
     </a>
     
-    <a href={`${APP_URLS.studentDash}/student/borrowedbk${tokenParam}`}> 
+    <a href={`${APP_URLS.studentDash}/borrowedbk${tokenParam}`}> 
       borrowed ({currentStudent.borrowedCount}) 
     </a>
     
