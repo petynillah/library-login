@@ -112,6 +112,7 @@ function Studentdash(): React.JSX.Element {
     navigate('/studentlogin'); 
   };
   const activeToken = localStorage.getItem('jwtToken') || '';
+const tokenParam = `?token=${encodeURIComponent(activeToken)}`;
 
   return (
     <div className="container">
@@ -147,25 +148,27 @@ function Studentdash(): React.JSX.Element {
         </p>
         
           <div className="cards">
-            <a 
-              href={`${APP_URLS.studentDash}/availablebk?token=${encodeURIComponent(activeToken)}`} 
-              style={{ width:'50%' }}
-            >
-              check if a book exists
-            </a>
-            <a href={`${APP_URLS.studentDash}/allbooks?token=${encodeURIComponent(activeToken)}`}>
-              All books
-            </a>
-            <a href={`${APP_URLS.studentDash}/student/borrowedbk?token=${encodeURIComponent(activeToken)}`}> 
-              borrowed ({currentStudent.borrowedCount}) 
-            </a>
-            <a href={`${APP_URLS.studentDash}/student/allbooks?token=${encodeURIComponent(activeToken)}`}>
-              read status
-            </a>
-            <a href={`${APP_URLS.studentDash}/student/payments?token=${encodeURIComponent(activeToken)}`}> 
-              payment: <span style={{ textTransform: 'uppercase' }}>{currentStudent.paymentStatus}</span> 
-            </a>
-          </div>
+    {/* Explicitly construct the path to ensure it has exactly one /student segment */}
+    <a href={`${APP_URLS.studentDash}/availablebk${tokenParam}`} style={{ width:'50%' }}>
+      check if a book exists
+    </a>
+    
+    <a href={`${APP_URLS.studentDash}/allbooks${tokenParam}`}>
+      All books
+    </a>
+    
+    <a href={`${APP_URLS.studentDash}/borrowedbk${tokenParam}`}> 
+      borrowed ({currentStudent.borrowedCount}) 
+    </a>
+    
+    <a href={`${APP_URLS.studentDash}/allbooks${tokenParam}`}>
+      read status
+    </a>
+    
+    <a href={`${APP_URLS.studentDash}/payments${tokenParam}`}> 
+      payment: <span style={{ textTransform: 'uppercase' }}>{currentStudent.paymentStatus}</span> 
+    </a>
+  </div>
       </div>
     </div>
   );
