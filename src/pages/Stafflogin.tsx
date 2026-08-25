@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { loginStaff, verifyStaff2FA } from "../api";
-import { Link} from "react-router-dom";
-import { APP_URLS } from "../Appurl";
+import { Link, useNavigate } from "react-router-dom";
 
 function Stafflogin() {
   const [staffId, setStaffId] = useState('');
@@ -10,7 +9,7 @@ function Stafflogin() {
   const [tempToken, setTempToken] = useState('');
   const [stage, setStage] = useState<'credentials' | 'otp'>('credentials');
   const [errorMessage, setErrorMessage] = useState('');
- 
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +30,8 @@ function Stafflogin() {
         // Trusted device — no OTP needed, go straight to the dashboard.
         // FIXED: this previously redirected back to the login page itself,
         // which looked like the login "did nothing" even though the token was stored.
-         window.location.href = `${APP_URLS.staffDashboard}/staffdash?token=${encodeURIComponent(response.token)}`;
+        localStorage.setItem('jwtToken', response.token);
+        navigate('/staffdash');
       }
     } else {
       setErrorMessage(response.message || 'Login failed');
@@ -50,7 +50,8 @@ function Stafflogin() {
     const response = await verifyStaff2FA(tempToken, { otp });
 
     if (response.success && response.token) {
-     window.location.href = `${APP_URLS.staffDashboard}/staffdash?token=${encodeURIComponent(response.token)}`;
+      localStorage.setItem('jwtToken', response.token);
+      navigate('/staffdash');
     } else {
       setErrorMessage(response.message || 'Verification failed');
     }

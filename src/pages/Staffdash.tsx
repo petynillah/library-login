@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import logo from "../assets/logo.jpg";
 import { getStaffById } from '../api';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { APP_URLS } from '../Appurl';
 
 // Explicit TypeScript Interface for the decoded payload structure
@@ -71,16 +71,7 @@ function Staffdash(): React.JSX.Element {
       is2FAVerified: false
     };
   });
-
-  const [searchParams] = useSearchParams();
-
-useEffect(() => {
-  const tokenFromUrl = searchParams.get('token');
-  if (tokenFromUrl) {
-    localStorage.setItem('jwtToken', tokenFromUrl);
-    navigate('/staffdash', { replace: true }); // strips ?token=... from the visible URL
-  }
-}, [searchParams, navigate]);
+  
   
   const [sessionError, setSessionError] = useState<string | null>(null);
 
@@ -124,6 +115,9 @@ useEffect(() => {
     navigate('/stafflogin'); 
   };
 
+  const activeToken = localStorage.getItem('jwtToken') || '';
+const tokenParam = `?token=${encodeURIComponent(activeToken)}`;
+
   return (
     <div className="container">
       {/* Navigation Bar Header */}
@@ -159,12 +153,16 @@ useEffect(() => {
         </p>
         
         <div className="cards">
-          <a href={`${APP_URLS.staffDashboard}/dashboard/bookdash`}>books</a>
-          <a href={`${APP_URLS.staffDashboard}/dashboard/addcategory`}>categories</a>
-          <a href={`${APP_URLS.staffDashboard}/dashboard/borrowbook`}>borrow</a>
-          <a href={`${APP_URLS.staffDashboard}/dashboard/addshelf`}>shelving</a>
-          <a href={`${APP_URLS.staffDashboard}/dashboard/studentdash`}>students</a>
-        </div>
+    {/* 
+      FIXED: We append the token parameter to the cross-app domain jump links.
+      Also cleaned up the duplicate nested "/dashboard" segments to match App B's routes!
+    */}
+    <a href={`${APP_URLS.staffDashboard}/bookdash${tokenParam}`}>books</a>
+    <a href={`${APP_URLS.staffDashboard}/addcategory${tokenParam}`}>categories</a>
+    <a href={`${APP_URLS.staffDashboard}/borrowbook${tokenParam}`}>borrow</a>
+    <a href={`${APP_URLS.staffDashboard}/addshelf${tokenParam}`}>shelving</a>
+    <a href={`${APP_URLS.staffDashboard}/studentdash${tokenParam}`}>students</a>
+  </div>
       </div>
     </div>
   );
