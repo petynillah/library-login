@@ -1,9 +1,6 @@
 {
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/login/assets/:path*", "destination": "/assets/:path*" },
-    { "source": "/login/:path*", "destination": "/index.html" },
-    { "source": "/login", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
