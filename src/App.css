@@ -272,3 +272,21 @@
      1px  1px 0 #fff; /* Creates a solid 1px white border */
 }
 
+.sso-card-btn {
+  background: #f0f0f0; /* Match your dashboard card background colors */
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: capitalize;
+  transition: all 0.2s ease;
+}
+
+.sso-card-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+

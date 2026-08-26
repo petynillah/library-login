@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import logo from "../assets/logo.jpg";
-import { getStaffById } from '../api';
+import { getStaffById } from '../api'; // Ensure fetchWithAuth is either exported here or import it directly
 import { Link, useNavigate } from 'react-router-dom';
 import { APP_URLS } from '../Appurl';
 
@@ -14,10 +14,6 @@ interface DecodedTokenUser {
   is2FAVerified: boolean;
 }
 
-/**
- * Extracts and decodes the JWT token payload from LocalStorage safely.
- * Matches backend middleware authentication expectations.
- */
 const getStaffInfoFromToken = (): DecodedTokenUser | null => {
   const token = localStorage.getItem('jwtToken'); 
   if (!token) return null;
@@ -58,7 +54,7 @@ const getStaffInfoFromToken = (): DecodedTokenUser | null => {
 };
 
 function Staffdash(): React.JSX.Element {
-  const navigate = useNavigate(); // Hook for seamless SPA redirection
+  const navigate = useNavigate(); 
   
   const [currentStaff, setCurrentStaff] = useState<DecodedTokenUser>(() => {
     const tokenBackup = getStaffInfoFromToken();
@@ -72,10 +68,9 @@ function Staffdash(): React.JSX.Element {
     };
   });
   
-  
   const [sessionError, setSessionError] = useState<string | null>(null);
+  const [redirectLoading, setRedirectLoading] = useState<string | null>(null); // Visual loading state tracker
 
-  // 🔄 BACKGROUND RE-SYNC: Pull absolute live metrics using centralized CRUD engine
   useEffect(() => {
     const syncStaffDatabaseData = async () => {
       const cachedTokenInfo = getStaffInfoFromToken();
@@ -115,8 +110,39 @@ function Staffdash(): React.JSX.Element {
     navigate('/stafflogin'); 
   };
 
-  const activeToken = localStorage.getItem('jwtToken') || '';
-const tokenParam = `?token=${encodeURIComponent(activeToken)}`;
+  // =========================================================
+  // 🔑 NEW SECURE CROSS-APP HANDLING LOGIC
+  // =========================================================
+  const handleSecureCrossRedirect = async (targetPath: string) => {
+    setRedirectLoading(targetPath);
+    const token = localStorage.getItem('jwtToken') || '';
+
+    try {
+      // Hit your new ticket generator backend path
+      const apiURL = import.meta.env.VITE_API_URL || '/api';
+      const response = await fetch(`${apiURL}/auth/generate-sso-ticket`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token.startsWith('Bearer ') ? token : `Bearer ${token}`
+        }
+      });
+      
+      const result = await response.json();
+
+      if (result.success && result.ticket) {
+        // Redirect to App B using the temporary, single-use ticket variable
+        window.location.href = `${APP_URLS.staffDashboard}${targetPath}?ticket=${result.ticket}`;
+      } else {
+        alert(result.message || "Failed to authorize cross-app navigation.");
+        setRedirectLoading(null);
+      }
+    } catch (error) {
+      console.error("SSO Token exchange routing handshaking failed:", error);
+      alert("Network connectivity issue. Could not navigate securely.");
+      setRedirectLoading(null);
+    }
+  };
 
   return (
     <div className="container">
@@ -152,17 +178,48 @@ const tokenParam = `?token=${encodeURIComponent(activeToken)}`;
           <b>Welcome</b> <i>{currentStaff.name}</i>
         </p>
         
+        {/* 🛠️ UPDATED CARDS GRID LAYOUT */}
         <div className="cards">
-    {/* 
-      FIXED: We append the token parameter to the cross-app domain jump links.
-      Also cleaned up the duplicate nested "/dashboard" segments to match App B's routes!
-    */}
-    <a href={`${APP_URLS.staffDashboard}/bookdash${tokenParam}`}>books</a>
-    <a href={`${APP_URLS.staffDashboard}/addcategory${tokenParam}`}>categories</a>
-    <a href={`${APP_URLS.staffDashboard}/borrowbook${tokenParam}`}>borrow</a>
-    <a href={`${APP_URLS.staffDashboard}/addshelf${tokenParam}`}>shelving</a>
-    <a href={`${APP_URLS.staffDashboard}/studentdash${tokenParam}`}>students</a>
-  </div>
+          <button 
+            onClick={() => handleSecureCrossRedirect('/bookdash')}
+            className="sso-card-btn"
+            disabled={redirectLoading !== null}
+          >
+            {redirectLoading === '/bookdash' ? 'Connecting Securely...' : 'books'}
+          </button>
+
+          <button 
+            onClick={() => handleSecureCrossRedirect('/addcategory')}
+            className="sso-card-btn"
+            disabled={redirectLoading !== null}
+          >
+            {redirectLoading === '/addcategory' ? 'Connecting Securely...' : 'categories'}
+          </button>
+
+          <button 
+            onClick={() => handleSecureCrossRedirect('/borrowbook')}
+            className="sso-card-btn"
+            disabled={redirectLoading !== null}
+          >
+            {redirectLoading === '/borrowbook' ? 'Connecting Securely...' : 'borrow'}
+          </button>
+
+          <button 
+            onClick={() => handleSecureCrossRedirect('/addshelf')}
+            className="sso-card-btn"
+            disabled={redirectLoading !== null}
+          >
+            {redirectLoading === '/addshelf' ? 'Connecting Securely...' : 'shelving'}
+          </button>
+
+          <button 
+            onClick={() => handleSecureCrossRedirect('/studentdash')}
+            className="sso-card-btn"
+            disabled={redirectLoading !== null}
+          >
+            {redirectLoading === '/studentdash' ? 'Connecting Securely...' : 'students'}
+          </button>
+        </div>
       </div>
     </div>
   );
