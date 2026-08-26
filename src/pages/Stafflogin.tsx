@@ -11,34 +11,7 @@ function Stafflogin() {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMessage('');
-
-    if (!staffId || !password) {
-      setErrorMessage('Please fill in all fields');
-      return;
-    }
-
-    const response = await loginStaff({ staff_id: staffId, password });
-
-    if (response.success && response.token) {
-      if (response.requires2FA) {
-        setTempToken(response.token);
-        setStage('otp');
-      } else {
-        // Trusted device — no OTP needed, go straight to the dashboard.
-        // FIXED: this previously redirected back to the login page itself,
-        // which looked like the login "did nothing" even though the token was stored.
-        localStorage.setItem('jwtToken', response.token);
-        navigate('/staffdash');
-      }
-    } else {
-      setErrorMessage(response.message || 'Login failed');
-    }
-  };
-
-  const handleVerifyOtp = async (e: React.FormEvent) => {
+   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
 
@@ -47,7 +20,11 @@ function Stafflogin() {
       return;
     }
 
-    const response = await verifyStaff2FA(tempToken, { otp });
+    // 💡 THE FIX: Remove "Bearer " if it exists in the token string before sending it
+    const cleanToken = tempToken.replace(/^(Bearer\s+)+/i, '').trim();
+
+    // Pass the clean token here instead of tempToken
+    const response = await verifyStaff2FA(cleanToken, { otp });
 
     if (response.success && response.token) {
       localStorage.setItem('jwtToken', response.token);
@@ -56,6 +33,7 @@ function Stafflogin() {
       setErrorMessage(response.message || 'Verification failed');
     }
   };
+
 
   if (stage === 'otp') {
     return (
