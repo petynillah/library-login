@@ -157,13 +157,19 @@ export const loginStaff = async (data: StaffLoginData): Promise<AuthResponse> =>
 };
 
 export const verifyStaff2FA = async (tempToken: string, data: StaffVerify2FAData): Promise<AuthResponse> => {
+  // 💡 THE FIX: Safely parse and strip any pre-existing Bearer tags sent by the frontend
+  let cleanToken = tempToken ? tempToken.trim() : '';
+  if (cleanToken.toLowerCase().startsWith('bearer ')) {
+    cleanToken = cleanToken.substring(7).trim();
+  }
+
   try {
     const response = await fetch(`${API_BASE_URL}/staff/verify-2fa`, {
       method: 'POST',
-      credentials: 'include', // ADD THIS
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${tempToken}`,
+        'Authorization': `Bearer ${cleanToken}`, // Now perfectly formatted with exactly ONE Bearer!
       },
       body: JSON.stringify(data),
     });
@@ -173,6 +179,7 @@ export const verifyStaff2FA = async (tempToken: string, data: StaffVerify2FAData
     return { success: false, message: 'Could not connect to the server.' };
   }
 };
+
 
 export const revokeAllTrustedDevices = async (): Promise<AuthResponse> => {
   try {
