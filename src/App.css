@@ -273,20 +273,20 @@
 }
 
 .sso-card-btn {
-  background: #f0f0f0; /* Match your dashboard card background colors */
-  border: 1px solid #ccc;
-  padding: 20px;
-  border-radius: 8px;
+  background: #AC7F5E; /* Match your dashboard card background colors */
+  border: none;
+  padding: 50px 10px;
+  border-radius: 20px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
   text-transform: capitalize;
   transition: all 0.2s ease;
+  width: 40%;
+  color: white;
 }
 
 .sso-card-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
-
-
