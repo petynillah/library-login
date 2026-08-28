@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import logo from "../assets/logo.jpg";
 import { getStudentById } from '../api'; 
 import { Link, useNavigate } from 'react-router-dom'; 
-//import { APP_URLS } from '../Appurl';
 
 interface DecodedTokenUser {
   id: string | number;         
@@ -150,7 +149,6 @@ const cleanBaseRoute = "https://student-dash-zeta.vercel.app/";
         </p>
         
            <div className="cards">
-    {/* This generates: https://vercel.app/availablebk?token=... */}
 
     <a href={`${cleanBaseRoute}/availablebk${tokenParam}`} style={{ width:'50%' }}>
       check if a book exists
@@ -168,7 +166,7 @@ const cleanBaseRoute = "https://student-dash-zeta.vercel.app/";
       read status
     </a>
     
-    <a href={`${cleanBaseRoute}/payments${tokenParam}`}> 
+    <a href= ''> 
       payment: <span style={{ textTransform: 'uppercase' }}>{currentStudent.paymentStatus}</span> 
     </a>
   </div>
